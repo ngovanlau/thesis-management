@@ -1,0 +1,75 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<h1>THỐNG KÊ</h1>
+<div style="display: flex; flex-direction: row; width: 100%;">
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>Mã</th>
+                <th>Tên luận văn</th>
+                <th>Điểm</th>
+            <tr>
+            </thead>
+            <tbody>
+            {% for t in stats %}
+                <tr>
+                    <td>{{t.id}}</td>
+                    <td>{{t.name}}</td>
+                    <td>{{t.sum}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div v style="min-width: 50%; margin-left: 20px">
+        <form>
+            <div>
+                <div>Năm</div>
+                <input type="number" min="1900" name="year" step="1"/>
+            </div>
+            <div>
+                <input type="submit" value="Lọc dữ liệu" class="btn btn-info"/>
+            </div>
+        </form>
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    window.onload = function () {
+        const ctx = document.getElementById('myChart');
+
+        let data = [];
+        let labels = [];
+
+        {%for t in stats %}
+        labels.push('{{t.name}}');
+        data.push({{t.sum}});
+        {% endfor %}
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Điểm',
+                    data: data,
+                    borderWidth:  5,
+                    borderColor: 'black',
+                    backgroundColor: ['red', 'green', 'blue', 'gold', 'silver']
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
